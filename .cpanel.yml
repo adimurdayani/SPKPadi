@@ -1,5 +1,5 @@
 ---
 deployment:
 tasks:
-- export DEPLOYPATH=/home/mobn3914/public_html/
+- export DEPLOYPATH=/home/mobn3914/public_html/sistempakar/git
 - /bin/cp -R * $DEPLOYPATH
