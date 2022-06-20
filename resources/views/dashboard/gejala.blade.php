@@ -27,6 +27,7 @@
 					<thead>
 						<tr>
 							<th>#</th>
+							<th>Kode</th>
 							<th>Gejala</th>
 							@if (Auth::user())
 								<th>Opsi</th>
@@ -37,6 +38,7 @@
 						@foreach ($gejala as $gejala)
 							<tr>
 								<td><input type="checkbox" name="gejala[]" value="{{ $gejala->id }}"></td>
+								<td>{{ $gejala->kode }}</td>
 								<td>
 									<span class="{{ $gejala->id }}">{{ $gejala->name }}</span>
 									<form class="{{ $gejala->id }}" style="display: none" method="post" action="{{ route('gejala.update', $gejala->id) }}">

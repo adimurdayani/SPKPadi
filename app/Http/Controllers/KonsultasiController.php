@@ -12,26 +12,31 @@ use App\Penyakit;
 
 class KonsultasiController extends Controller
 {
-    public function pasienForm() {
-    	return view('konsultasi_form_pasien');
+
+    public function pasienForm()
+    {
+        return view('konsultasi_form_pasien');
     }
 
-    public function storePasien(Request $request) {
-    	$pasien = new Pasien;
-    	$pasien->nama = $request->nama;
-    	$pasien->lokasi = $request->lokasi;
-    	$pasien->save();
-    	return $this->selectGejala($pasien->id);
+    public function storePasien(Request $request)
+    {
+        $pasien = new Pasien;
+        $pasien->nama = $request->nama;
+        $pasien->lokasi = $request->lokasi;
+        $pasien->save();
+        return $this->selectGejala($pasien->id);
     }
 
-    private function selectGejala($pasien_id) {
-    	$gejala = Gejala::all();
-    	return view('konsultasi_form_gejala', compact('gejala', 'pasien_id'));
+    private function selectGejala($pasien_id)
+    {
+        $gejala = Gejala::all();
+        return view('konsultasi_form_gejala', compact('gejala', 'pasien_id'));
     }
 
-    public function diagnosa(Request $request) {
+    public function diagnosa(Request $request)
+    {
         $pasien_id = $request->pasien_id;
-    	foreach ($request->gejala as $gejala_id) {
+        foreach ($request->gejala as $gejala_id) {
             $pasien = Pasien::find($pasien_id)->attachGejala($gejala_id);
             $gejala = Gejala::find($gejala_id);
             foreach ($gejala->penyakit as $penyakit) {
@@ -48,7 +53,7 @@ class KonsultasiController extends Controller
                     $temp_diag = $temp_diagnosa->update(['gejala_terpenuhi' => $temp_diag->gejala_terpenuhi + 1]);
                 }
             }
-    	}
+        }
 
         $this->hitungPersen($pasien_id);
 
@@ -57,17 +62,19 @@ class KonsultasiController extends Controller
         return redirect()->route('hasilDiagnosa', $pasien_id);
     }
 
-    private function hitungPersen($pasien_id) {
+    private function hitungPersen($pasien_id)
+    {
         $temp_diags = TempDiagnosa::where('pasien_id', $pasien_id)->get();
         foreach ($temp_diags as $temp_diag) {
             $persen = ($temp_diag->gejala_terpenuhi / $temp_diag->gejala) * 100;
             TempDiagnosa::where('penyakit_id', $temp_diag->penyakit_id)
-                            ->where('pasien_id', $pasien_id)
-                            ->update(['persen' => $persen]);
+                ->where('pasien_id', $pasien_id)
+                ->update(['persen' => $persen]);
         }
     }
 
-    private function hasil($pasien_id) {
+    private function hasil($pasien_id)
+    {
         $temp_diagnosa = TempDiagnosa::where('pasien_id', $pasien_id);
         $sum_persen = $temp_diagnosa->sum('persen');
         $temp_diag = $temp_diagnosa->get();
@@ -83,11 +90,13 @@ class KonsultasiController extends Controller
         // return $this->hapusTempDiagnosa($pasien_id);
     }
 
-    private function hapusTempDiagnosa($pasien_id) {
+    private function hapusTempDiagnosa($pasien_id)
+    {
         return TempDiagnosa::where('pasien_id', $pasien_id)->delete();
     }
 
-    public function hasilDiagnosa($pasien_id) {
+    public function hasilDiagnosa($pasien_id)
+    {
         $diagnosa = Diagnosa::where('pasien_id', $pasien_id)->first();
         return view('diagnosa', compact('diagnosa'));
     }

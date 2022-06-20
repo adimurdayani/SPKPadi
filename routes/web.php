@@ -19,10 +19,10 @@ Route::get('/', 'HomeController@index');
 Route::get('/penyakit', 'HomeController@penyakit')->name('penyakit');
 Route::get('/penyakit/detail/{penyakit}', 'HomeController@detail')->name('detail');
 Route::get('/gejala', 'HomeController@gejala')->name('gejala');
-Route::get('/tentang', function() {
+Route::get('/tentang', function () {
 	return view('tentang');
 })->name('tentang');
-Route::group(['prefix' => 'konsultasi'], function() {
+Route::group(['prefix' => 'konsultasi'], function () {
 	Route::get('/', 'KonsultasiController@pasienForm')->name('pasienForm');
 	Route::post('/', 'KonsultasiController@storePasien')->name('storePasien');
 	Route::post('/diagnosa', 'KonsultasiController@diagnosa')->name('diagnosa');
@@ -31,7 +31,8 @@ Route::group(['prefix' => 'konsultasi'], function() {
 
 Auth::routes();
 
-Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function() {
+Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
 	Route::resource('/gejala', 'Dashboard\GejalaController');
 	Route::resource('/penyakit', 'Dashboard\PenyakitController');
+	// Route::resource('/rule', 'Dashboard\PenyakitController');
 });
